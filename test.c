@@ -17,21 +17,54 @@ typedef struct {
 } TASK;
 
 // function prototypes
-void firstRun();
+void firstRun(int*);
+void clearScreen();
+int notification(int*);
 
 
 
 int main() {
     
     // main variables
-    firstRun();
+    int notificationId = 0;
+
+    // first run
+    firstRun(&notificationId);
+
+    clearScreen();
+    notification(&notificationId);
 
     
     return 0;
 
 } // end main()
 
-void firstRun() {
+// directive to clear screen for OS
+void clearScreen() {
+#ifdef _WIN64
+    system("cls"); // 'cls' for Windows 64
+#elif __linux__
+    system("clear"); // 'clear' for Linux
+#endif
+} // end clearScreen()
+
+
+// notifications 
+int notification(int* notificationId) {
+    if (*notificationId == 1) {
+        printf("\n [!] Backup file created...\n");
+    }
+
+    if (*notificationId == 2) {
+        printf("\n [!] Backup file found...\n");
+    }
+
+    *notificationId = 0;
+
+} // end notifications()
+
+
+void firstRun(int* notificationId) {
     FILE* file;
     file = fopen(FILENAME, "rb");
     if (file == NULL) {
@@ -42,11 +75,12 @@ void firstRun() {
         fwrite(&taskCounter, sizeof(int), 1, file);
         fwrite(tasks, sizeof(TASK), 1, file);
         printf("Backup file created...\n");
+        *notificationId = 1;
         fclose(file);
         free(tasks);
     }
     else {
-        printf("Found file...\n");
+        *notificationId = 2;
         fclose(file);
     }
 }
