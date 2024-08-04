@@ -20,6 +20,7 @@ typedef struct {
 void firstRun(int*);
 void clearScreen();
 int notification(int*);
+void format(char*);
 
 int main() {
     
@@ -39,6 +40,7 @@ int main() {
     char tempDescription[TASK_LENGTH];
     printf("Enter task: ");
     fgets(tempDescription, TASK_LENGTH, stdin);
+    format(tempDescription);
     strcpy(tempTask.name, tempDescription);
     tempTask.complete = 0;
 
@@ -117,3 +119,30 @@ void firstRun(int* notificationId) {
         fclose(file);
     }
 }
+
+// format string sentence case and extra spaces
+void format(char* string) {
+    int i, j;
+    int counter = strlen(string);
+    string[counter - 1] = '\0';
+    for (i = 0; i < counter; i++) {
+        if (i == 0) {
+            string[i] = toupper(string[i]); // uppercase first character
+        }
+        else if (isspace(string[i - 1])) {
+            string[i] = toupper(string[i]); // uppercase first letter character
+        }
+        else if (string[i] == ' ') {
+            while (string[i + 1] == ' ') {
+                for (j = i; j < counter; j++) {
+                    string[j] = string[j + 1]; // Shift characters to the left
+                }
+                counter--;
+            }
+        }
+        else {
+            string[i] = tolower(string[i]); // lowercase rest of word
+        }
+    }
+
+} // end format()
