@@ -21,12 +21,13 @@ void firstRun(int*);
 void clearScreen();
 int notification(int*);
 
-
-
 int main() {
     
     // main variables
     int notificationId = 0;
+    int taskCounter = 0;
+    TASK* tasks;
+    FILE* file;
 
     // first run
     firstRun(&notificationId);
@@ -34,7 +35,39 @@ int main() {
     clearScreen();
     notification(&notificationId);
 
-    
+    TASK tempTask;
+    char tempDescription[TASK_LENGTH];
+    printf("Enter task: ");
+    fgets(tempDescription, TASK_LENGTH, stdin);
+    strcpy(tempTask.name, tempDescription);
+    tempTask.complete = 0;
+
+    file = fopen(FILENAME, "rb");
+
+    // test
+
+    fread(&taskCounter, sizeof(int), 1, file);
+    tasks = (TASK *)calloc(taskCounter + 1, sizeof(TASK));
+    fread(tasks, sizeof(TASK), taskCounter, file);
+    fclose(file);
+
+    strcpy(tasks[taskCounter].name, tempTask.name);
+    tasks[taskCounter].complete = tempTask.complete;
+    taskCounter++;
+
+    file = fopen(FILENAME, "wb");
+
+    // test
+
+    fwrite(&taskCounter, sizeof(int), 1, file);
+    fwrite(tasks, sizeof(TASK), taskCounter, file);
+
+    for (int i = 0; i < taskCounter; i++) {
+        printf("%s (%s)\n", tasks[i].name, tasks[i].complete == 0 ? "Pending" : "Complete");
+    }
+
+
+    free(tasks);    
     return 0;
 
 } // end main()
