@@ -46,7 +46,9 @@ int main() {
 
     file = fopen(FILENAME, "rb");
 
-    // test
+    if (file == NULL) {
+        printf("Could not open file");
+    }
 
     fread(&taskCounter, sizeof(int), 1, file);
     tasks = (TASK *)calloc(taskCounter + 1, sizeof(TASK));
@@ -59,7 +61,9 @@ int main() {
 
     file = fopen(FILENAME, "wb");
 
-    // test
+    if (file == NULL) {
+        printf("Could not open file");
+    }
 
     fwrite(&taskCounter, sizeof(int), 1, file);
     fwrite(tasks, sizeof(TASK), taskCounter, file);
